@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OCEAN SEAFOOD - Nhà hàng hải sản tươi sống. Tinh hoa đại dương, trọn vị yêu thương.">
+  <title>OCEAN SEAFOOD - Tinh hoa đại dương, trọn vị yêu thương</title>
+
+  <!-- Font chữ từ Google Fonts (không có mạng thì trình duyệt tự dùng font dự phòng) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- File giao diện: thứ tự quan trọng, style.css phải đứng đầu -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Dữ liệu món ăn (đặt ở head, xem giải thích phía trên) -->
+  <script src="js/products.js"></script>
+</head>
+
+<body class="page-home">
+
+  <!-- HEADER: main.js sẽ tự đổ nội dung vào đây -->
+    <!-- Nền "lặn sâu dần" theo cuộn trang: chỉ ở trang chủ, nằm cố định sau mọi nội dung -->
+  <div class="dive-bg" aria-hidden="true">
+    <canvas id="ocean-fx" class="ocean-fx-canvas"></canvas>
+    <div class="dive-bg-layer dive-bg-shallow"></div>
+    <div class="dive-bg-layer dive-bg-mid"></div>
+    <div class="dive-bg-layer dive-bg-deep"></div>
+    <!-- Rong biển đung đưa ở đáy -->
+<div class="seaweed sw-1"></div>
+<div class="seaweed sw-2"></div>
+<div class="seaweed sw-3"></div>
+<div class="seaweed sw-4"></div>
+
+<!-- Ánh sáng lung linh xuyên nước -->
+<div class="dive-caustics"></div>
+
+<!-- Sinh vật phù du trôi -->
+<span class="plankton pl-1"></span>
+<span class="plankton pl-2"></span>
+<span class="plankton pl-3"></span>
+<span class="plankton pl-4"></span>
+<span class="plankton pl-5"></span>
+<span class="plankton pl-6"></span>
+<span class="plankton pl-7"></span>
+<span class="plankton pl-8"></span>
+
+<!-- 6 con cá SVG, mỗi con có đuôi vẫy thật -->
+<div class="dive-fish fish-1">
+  <svg viewBox="0 0 60 28"><g class="fish-tail"><path d="M38,14 L58,3 L58,25 Z"/></g><ellipse class="fish-body-shape" cx="22" cy="14" rx="18" ry="9"/><path class="fish-fin" d="M16,6 Q22,-5 28,6 Z"/><circle class="fish-eye" cx="10" cy="11" r="1.7"/></svg>
+</div>
+<div class="dive-fish fish-2">
+  <svg viewBox="0 0 60 28"><g class="fish-tail"><path d="M38,14 L58,3 L58,25 Z"/></g><ellipse class="fish-body-shape" cx="22" cy="14" rx="18" ry="9"/><path class="fish-fin" d="M16,6 Q22,-5 28,6 Z"/><circle class="fish-eye" cx="10" cy="11" r="1.7"/></svg>
+</div>
+<div class="dive-fish fish-3">
+  <svg viewBox="0 0 60 28"><g class="fish-tail"><path d="M38,14 L58,3 L58,25 Z"/></g><ellipse class="fish-body-shape" cx="22" cy="14" rx="18" ry="9"/><path class="fish-fin" d="M16,6 Q22,-5 28,6 Z"/><circle class="fish-eye" cx="10" cy="11" r="1.7"/></svg>
+</div>
+<div class="dive-fish fish-4">
+  <svg viewBox="0 0 60 28"><g class="fish-tail"><path d="M38,14 L58,3 L58,25 Z"/></g><ellipse class="fish-body-shape" cx="22" cy="14" rx="18" ry="9"/><path class="fish-fin" d="M16,6 Q22,-5 28,6 Z"/><circle class="fish-eye" cx="10" cy="11" r="1.7"/></svg>
+</div>
+<div class="dive-fish fish-5">
+  <svg viewBox="0 0 60 28"><g class="fish-tail"><path d="M38,14 L58,3 L58,25 Z"/></g><ellipse class="fish-body-shape" cx="22" cy="14" rx="18" ry="9"/><path class="fish-fin" d="M16,6 Q22,-5 28,6 Z"/><circle class="fish-eye" cx="10" cy="11" r="1.7"/></svg>
+</div>
+<div class="dive-fish fish-6">
+  <svg viewBox="0 0 60 28"><g class="fish-tail"><path d="M38,14 L58,3 L58,25 Z"/></g><ellipse class="fish-body-shape" cx="22" cy="14" rx="18" ry="9"/><path class="fish-fin" d="M16,6 Q22,-5 28,6 Z"/><circle class="fish-eye" cx="10" cy="11" r="1.7"/></svg>
+</div>
+  </div>
+
+  <!-- Đồng hồ đo độ sâu: hiện bên phải màn hình, chỉ trên máy tính -->
+  <div class="dive-gauge" aria-hidden="true">
+    <div class="dive-gauge-track">
+      <div class="dive-gauge-fill" id="dive-gauge-fill"></div>
+    </div>
+    <div class="dive-gauge-readout">
+      <span id="dive-gauge-text">0m</span>
+      <small id="dive-gauge-zone">Vùng ánh sáng mặt trời</small>
+    </div>
+  </div>
+
+  <div id="site-header"></div>
+  <div id="site-header"></div>
+
+
+  <!-- ===== 1. BANNER CHÍNH ===== -->
+  <section class="hero">
+  <!-- Khung chứa cảnh biển 3D: ocean3d.js sẽ vẽ vào đây -->
+    <div id="ocean3d" class="ocean3d-bg"></div>
+    <div class="container hero-grid">
+       <div class="hero-content">
+        <h1>Hương vị đại dương trong từng món ăn</h1>
+        <p>
+          OCEAN SEAFOOD mang đến những món hải sản tươi sống mỗi ngày,
+          chế biến tinh tế trong không gian sang trọng, ấm cúng
+          dành cho gia đình, bạn bè và du khách.
+        </p>
+        <div class="hero-buttons">
+          <a href="menu.html" class="btn btn-gold btn-glow">Khám phá thực đơn</a>
+          <a href="booking.html" class="btn btn-outline">Đặt bàn ngay</a>
+        </div>
+      </div>
+
+    <!-- Vòng xoay 3D: JavaScript sẽ tạo các ảnh món vào #ring -->
+      <div class="hero-3d">
+        <div class="ring-stage">
+          <div class="ring-glow"></div>
+          <div class="ring-wrap" id="ring-wrap">
+            <div class="ring" id="ring"></div>
+          </div>
+        </div>
+        <!-- Chấm điều hướng: bấm để xoay thẳng tới món tương ứng -->
+        <div class="ring-dots" id="ring-dots"></div>
+      </div>
+
+    </div>
+  </section>
+ <!-- ===== 2. DANH MỤC MÓN ĂN NỔI BẬT: RẠN SAN HÔ ===== -->
+  <section class="section reef-section">
+    <div class="container">
+      <h2 class="section-title reveal">Danh mục nổi bật</h2>
+      <p class="section-subtitle reveal">Chạm vào một rạn san hô để xem gợi ý món ngay tại đây.</p>
+
+      <!-- Nền cát + rạn san hô: JavaScript tạo từng cụm vào đây -->
+      <div class="reef-bed" id="reef-bed"></div>
+    </div>
+  </section>
+
+  <!-- ===== 3. MÓN ĂN BÁN CHẠY ===== -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title reveal">Món ăn bán chạy</h2>
+      <p class="section-subtitle reveal">Những món được thực khách gọi nhiều nhất tại OCEAN SEAFOOD.</p>
+
+      <!-- JavaScript ở cuối trang sẽ tạo các card món ăn vào đây -->
+      <div class="grid grid-3" id="best-seller-list"></div>
+
+      <div style="text-align:center; margin-top:36px">
+        <a href="menu.html" class="btn btn-primary">Xem toàn bộ thực đơn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. GIỚI THIỆU NHÀ HÀNG ===== -->
+  <section class="section">
+    <div class="container about-block">
+      <div class="reveal">
+        <!-- Chưa có ảnh restaurant.jpg thì ảnh dự phòng sẽ tự hiện -->
+        <img src="images/restaurant/restaurant.jpg" alt="Không gian nhà hàng OCEAN SEAFOOD" onerror="handleImageError(this)">
+      </div>
+      <div class="reveal">
+        <h2>Câu chuyện thương hiệu</h2>
+        <p>
+          OCEAN SEAFOOD ra đời từ niềm đam mê với biển cả và mong muốn mang
+          những món hải sản tươi ngon nhất đến bàn ăn của mỗi gia đình Việt.
+        </p>
+        <p>
+          Chúng tôi chọn nguyên liệu từ các vùng biển nổi tiếng, vận chuyển trong
+          ngày và chế biến bởi đội ngũ đầu bếp giàu kinh nghiệm.
+        </p>
+        <ul style="margin-bottom:20px">
+          <li>✅ Hải sản tươi sống, nhập mới mỗi ngày</li>
+          <li>✅ Nguồn gốc rõ ràng, quy trình vệ sinh nghiêm ngặt</li>
+          <li>✅ Đội ngũ đầu bếp chuyên nghiệp</li>
+          <li>✅ Không gian sang trọng, phục vụ tận tâm</li>
+        </ul>
+        <a href="about.html" class="btn btn-outline-blue">Tìm hiểu thêm</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. ƯU ĐÃI ===== -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title reveal">Ưu đãi hấp dẫn</h2>
+      <p class="section-subtitle reveal">Nhập mã ở trang giỏ hàng để nhận ưu đãi.</p>
+
+      <div class="grid grid-3">
+        <div class="promo-card reveal">
+          <h3>Khách hàng mới</h3>
+          <p>Giảm 50.000đ cho đơn hàng đầu tiên từ 300.000đ.</p>
+          <span class="promo-code">WELCOME50</span>
+        </div>
+        <div class="promo-card reveal">
+          <h3>Giảm 10% toàn thực đơn</h3>
+          <p>Áp dụng cho mọi đơn hàng, không yêu cầu giá trị tối thiểu.</p>
+          <span class="promo-code">OCEAN10</span>
+        </div>
+        <div class="promo-card reveal">
+          <h3>Combo gia đình</h3>
+          <p>Giảm 100.000đ cho đơn từ 1.000.000đ. Thử ngay combo hải sản gia đình.</p>
+          <span class="promo-code">FAMILY100</span>
+          <div style="margin-top:14px">
+            <a href="product-detail.html?id=15" class="btn btn-gold btn-sm">Xem combo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. ĐÁNH GIÁ KHÁCH HÀNG ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title reveal">Khách hàng nói gì về chúng tôi</h2>
+      <p class="section-subtitle reveal">Những chia sẻ chân thật từ thực khách đã dùng bữa tại nhà hàng.</p>
+
+      <div class="grid grid-3">
+        <div class="review-card reveal">
+          <div class="rating">★★★★★</div>
+          <p>"Hải sản rất tươi, tôm hùm nướng phô mai ngon tuyệt. Cả nhà mình ai cũng thích, nhất định sẽ quay lại."</p>
+          <div class="review-name">Nguyễn Minh Anh</div>
+        </div>
+        <div class="review-card reveal">
+          <div class="rating">★★★★★</div>
+          <p>"Không gian sang trọng, nhân viên nhiệt tình. Lẩu hải sản đặc biệt rất đáng tiền, nước dùng ngọt thanh."</p>
+          <div class="review-name">Trần Quốc Bảo</div>
+        </div>
+        <div class="review-card reveal">
+          <div class="rating">★★★★☆</div>
+          <p>"Đi du lịch ghé ăn thử và rất hài lòng. Cua hấp bia thơm ngon, lên món nhanh. Cuối tuần nên đặt bàn trước."</p>
+          <div class="review-name">Lê Thu Hà</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER: main.js sẽ tự đổ nội dung vào đây -->
+  <div id="site-footer"></div>
+
+  <!-- Nạp file JavaScript (products.js đã nạp ở head) -->
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/qr-widget.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/drag-cart.js"></script>
+  <script src="js/intro.js"></script>
+  <script src="js/dive-scroll.js"></script>
+  <script src="js/ocean-fx.js"></script>
+  <!-- Three.js (thư viện vẽ 3D) và cảnh biển riêng của trang chủ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/ocean3d.js"></script>
+ 
+  <!-- ===== JavaScript RIÊNG CỦA TRANG CHỦ ===== -->
+    <script>
+    /* ================= RẠN SAN HÔ ================= */
+
+        function renderReef() {
+      const bed = document.getElementById("reef-bed");
+      if (!bed) return;
+
+      const featured = CATEGORIES.filter(function (category) {
+        return category.id !== "tuoi-song" && category.id !== "do-uong";
+      });
+
+      bed.innerHTML = featured.map(function (category) {
+        const topDishes = PRODUCTS
+          .filter(function (p) { return p.category === category.id && p.inStock; })
+          .sort(function (a, b) { return b.rating - a.rating; })
+          .slice(0, 3);
+
+        const dishList = topDishes.map(function (p) {
+          return '<li><a href="product-detail.html?id=' + p.id + '">' + p.name + '</a></li>';
+        }).join("");
+
+        return `
+          <button type="button" class="reef-cluster reveal" data-reef="${category.id}">
+            <span class="reef-orb">
+              <span class="reef-orb-ring"></span>
+              <span class="reef-orb-glass"></span>
+              <span class="reef-icon">${category.icon}</span>
+            </span>
+            <span class="reef-label">${category.name}</span>
+
+            <span class="reef-popup">
+              <strong>${category.name}</strong>
+              <ul>${dishList || "<li>Đang cập nhật món</li>"}</ul>
+              <span class="reef-popup-link">Xem cả danh mục →</span>
+            </span>
+          </button>`;
+      }).join("");
+
+      bed.querySelectorAll(".reef-cluster").forEach(function (cluster) {
+        cluster.addEventListener("click", function () {
+          const isOpen = cluster.classList.contains("reef-open");
+
+          bed.querySelectorAll(".reef-cluster").forEach(function (c) {
+            c.classList.remove("reef-open");
+          });
+
+          if (isOpen) {
+            window.location.href = "menu.html?category=" + cluster.dataset.reef;
+          } else {
+            cluster.classList.add("reef-open");
+          }
+        });
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!event.target.closest(".reef-cluster")) {
+          bed.querySelectorAll(".reef-cluster").forEach(function (c) {
+            c.classList.remove("reef-open");
+          });
+        }
+      });
+
+      initReveal();
+    }
+
+    /* ================= MÓN ĂN BÁN CHẠY ================= */
+
+    function renderBestSellers() {
+      const container = document.getElementById("best-seller-list");
+      if (!container) return;
+
+      const bestSellers = PRODUCTS.filter(function (product) {
+        return product.bestSeller && product.inStock;
+      }).slice(0, 6);
+
+      container.innerHTML = bestSellers.map(createProductCard).join("");
+    }
+
+    /* ================= VÒNG XOAY 3D (CHIỀU SÂU) ================= */
+
+    function canAnimate3D() {
+      return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    let ringItemsData = [];
+    let ringAngle = 0;
+    let ringSpeed = 0.18;
+    let ringTargetSpeed = 0.18;
+    let ringJumpTarget = null;
+    const RING_RADIUS = 260;
+
+    function normalizeAngle(angle) {
+      let a = angle % 360;
+      if (a > 180) a -= 360;
+      if (a < -180) a += 360;
+      return a;
+    }
+
+    function mapRange(value, inMin, inMax, outMin, outMax) {
+      const t = (value - inMin) / (inMax - inMin);
+      return outMin + t * (outMax - outMin);
+    }
+
+    function renderHero3D() {
+      const ring = document.getElementById("ring");
+      const dotsBox = document.getElementById("ring-dots");
+      if (!ring || !canAnimate3D()) return;
+
+      const dishes = PRODUCTS.filter(function (p) { return p.bestSeller && p.inStock; }).slice(0, 6);
+      if (dishes.length < 3) return;
+
+      const angleStep = 360 / dishes.length;
+
+      ring.innerHTML = dishes.map(function (product) {
+        return `
+          <a href="product-detail.html?id=${product.id}" class="ring-item" title="${product.name}">
+            <span class="ring-price">${formatPrice(product.price)}</span>
+            <img src="${product.image}" alt="${product.name}" onerror="handleImageError(this)">
+            <span class="ring-name">${product.name}</span>
+          </a>`;
+      }).join("");
+
+      ringItemsData = Array.from(ring.querySelectorAll(".ring-item")).map(function (el, index) {
+        return { el: el, angle: index * angleStep };
+      });
+
+      if (dotsBox) {
+        dotsBox.innerHTML = dishes.map(function (_, index) {
+          return '<button type="button" class="ring-dot' + (index === 0 ? " active" : "") + '" data-index="' + index + '" aria-label="Xem món ' + (index + 1) + '"></button>';
+        }).join("");
+
+        dotsBox.querySelectorAll(".ring-dot").forEach(function (dot) {
+          dot.addEventListener("click", function () {
+            const index = Number(dot.dataset.index);
+            ringJumpTarget = -(index * angleStep);
+            dotsBox.querySelectorAll(".ring-dot").forEach(function (d) { d.classList.remove("active"); });
+            dot.classList.add("active");
+          });
+        });
+      }
+    }
+
+    function stepRing() {
+      if (!ringItemsData.length) {
+        if (canAnimate3D()) requestAnimationFrame(stepRing);
+        return;
+      }
+
+      if (ringJumpTarget !== null) {
+        const diff = normalizeAngle(ringJumpTarget - ringAngle);
+        ringAngle += diff * 0.08;
+        if (Math.abs(diff) < 0.3) { ringAngle = ringJumpTarget; ringJumpTarget = null; }
+      } else {
+        ringSpeed += (ringTargetSpeed - ringSpeed) * 0.05;
+        ringAngle += ringSpeed;
+      }
+
+      ringItemsData.forEach(function (item) {
+        const totalAngle = (item.angle + ringAngle) % 360;
+        const rad = (totalAngle * Math.PI) / 180;
+        const depth = Math.cos(rad);
+
+        const scale = mapRange(depth, -1, 1, 0.62, 1.08);
+        const opacity = mapRange(depth, -1, 1, 0.25, 1);
+        const blurPx = mapRange(depth, -1, 1, 5, 0);
+
+        item.el.style.transform =
+          "rotateY(" + totalAngle + "deg) translateZ(" + RING_RADIUS + "px) scale(" + scale.toFixed(3) + ")";
+        item.el.style.opacity = opacity.toFixed(2);
+        item.el.style.filter = "blur(" + blurPx.toFixed(1) + "px)";
+        item.el.style.zIndex = Math.round((depth + 1) * 100);
+      });
+
+      requestAnimationFrame(stepRing);
+    }
+
+    function setupHeroTilt() {
+      const hero = document.querySelector(".hero");
+      const wrap = document.getElementById("ring-wrap");
+      const stage = document.querySelector(".ring-stage");
+      if (!hero || !wrap || !canAnimate3D()) return;
+
+      hero.addEventListener("mousemove", function (event) {
+        const box = hero.getBoundingClientRect();
+        const x = (event.clientX - box.left) / box.width - 0.5;
+        const y = (event.clientY - box.top) / box.height - 0.5;
+        wrap.style.transform = "rotateX(" + (-y * 12) + "deg) rotateY(" + (x * 16) + "deg)";
+      });
+      hero.addEventListener("mouseleave", function () { wrap.style.transform = ""; });
+
+      if (stage) {
+        stage.addEventListener("mouseenter", function () { ringTargetSpeed = 0.03; });
+        stage.addEventListener("mouseleave", function () { ringTargetSpeed = 0.18; });
+      }
+    }
+
+    /* ================= NGHIÊNG THẺ MÓN ĂN BÁN CHẠY ================= */
+
+    function setupCardTilt() {
+      if (!canAnimate3D() || !window.matchMedia("(hover: hover)").matches) return;
+
+      const list = document.getElementById("best-seller-list");
+      if (!list) return;
+
+      list.addEventListener("mousemove", function (event) {
+        const card = event.target.closest(".product-card");
+        if (!card) return;
+
+        const box = card.getBoundingClientRect();
+        const x = (event.clientX - box.left) / box.width - 0.5;
+        const y = (event.clientY - box.top) / box.height - 0.5;
+
+        card.style.transition = "transform 0.1s ease-out, box-shadow 0.3s";
+        card.style.transform =
+          "perspective(900px) rotateX(" + (-y * 10) + "deg) rotateY(" + (x * 10) + "deg) translateY(-6px)";
+      });
+
+      list.addEventListener("mouseout", function (event) {
+        const card = event.target.closest(".product-card");
+        if (card && !card.contains(event.relatedTarget)) {
+          card.style.transition = "";
+          card.style.transform = "";
+        }
+      });
+    }
+
+    /* ================= KHỞI ĐỘNG ================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+      renderReef();
+      renderBestSellers();
+      renderHero3D();
+      setupHeroTilt();
+      stepRing();
+      setupCardTilt();
+    });
+  </script>
