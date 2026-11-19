@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Thực đơn hải sản OCEAN SEAFOOD: tôm hùm, cua, ghẹ, tôm, mực, cá biển, ốc, sò, lẩu và đồ uống.">
+  <title>Thực đơn - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <!-- Banner nhỏ đầu trang -->
+  <section class="page-banner">
+    <div class="container">
+      <h1>Thực đơn hải sản</h1>
+      <p>Tươi ngon mỗi ngày, chế biến theo phong cách đại dương</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Thanh tìm kiếm, sắp xếp, lọc món bán chạy -->
+       <div style="text-align:center; margin-bottom:20px">
+         <a href="combo-builder.html" class="btn btn-gold">🍱 Tự xây combo của riêng bạn</a>
+       </div>
+      <div class="filter-bar">
+        <input type="text" id="search-input" placeholder="🔍 Tìm món ăn theo tên (có thể gõ không dấu)..." autocomplete="off">
+
+        <select id="sort-select" aria-label="Sắp xếp">
+          <option value="default">Sắp xếp: Mặc định</option>
+          <option value="price-asc">Giá: thấp đến cao</option>
+          <option value="price-desc">Giá: cao xuống thấp</option>
+        </select>
+
+        <label class="filter-check">
+          <input type="checkbox" id="bestseller-check">
+          Chỉ món bán chạy
+        </label>
+      </div>
+
+      <!-- Các nút danh mục: JavaScript tạo bên dưới -->
+      <div class="category-tabs" id="category-tabs"></div>
+
+      <!-- Dòng báo số món tìm thấy -->
+      <p id="result-count" style="margin-bottom:20px; color:var(--color-text-light)"></p>
+
+      <!-- Danh sách món ăn -->
+      <div class="grid grid-3" id="product-list"></div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/qr-widget.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/drag-cart.js"></script>
+  <script src="js/intro.js"></script>
+
+  <!-- ===== JavaScript RIÊNG CỦA TRANG THỰC ĐƠN ===== -->
+  <script>
+    // Danh mục đang chọn. "all" nghĩa là hiện tất cả.
+    let currentCategory = "all";
+
+    // Bỏ dấu tiếng Việt để tìm kiếm dễ hơn: "Tôm hùm" -> "tom hum"
+    function removeAccents(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")                  // tách dấu ra khỏi chữ cái
+        .replace(/[\u0300-\u036f]/g, "")   // xóa các dấu
+        .replace(/đ/g, "d");               // chữ đ cần xử lý riêng
+    }
+
+    // Tạo hàng nút danh mục: "Tất cả" + các danh mục trong products.js
+    function renderCategoryTabs() {
+      const container = document.getElementById("category-tabs");
+
+      let html = '<button class="tab-btn" data-category="all">Tất cả</button>';
+      CATEGORIES.forEach(function (category) {
+        html += '<button class="tab-btn" data-category="' + category.id + '">' +
+                category.icon + " " + category.name + "</button>";
+      });
+      container.innerHTML = html;
+
+      // Gắn sự kiện bấm cho từng nút
+      container.querySelectorAll(".tab-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          currentCategory = button.dataset.category;
+          updateActiveTab();
+          renderProducts();
+        });
+      });
+
+      updateActiveTab();
+    }
+
+    // Tô màu nút danh mục đang được chọn
+    function updateActiveTab() {
+      document.querySelectorAll(".tab-btn").forEach(function (button) {
+        button.classList.toggle("active", button.dataset.category === currentCategory);
+      });
+    }
+
+    // Lọc và sắp xếp theo các lựa chọn hiện tại, trả về danh sách món
+    function getFilteredProducts() {
+      const keyword = removeAccents(document.getElementById("search-input").value.trim());
+      const onlyBestSeller = document.getElementById("bestseller-check").checked;
+      const sortType = document.getElementById("sort-select").value;
+
+      // Bước 1: lọc
+      const result = PRODUCTS.filter(function (product) {
+        const matchCategory = currentCategory === "all" || product.category === currentCategory;
+        const matchKeyword = removeAccents(product.name).includes(keyword);
+        const matchBestSeller = !onlyBestSeller || product.bestSeller;
+        return matchCategory && matchKeyword && matchBestSeller;
+      });
+
+      // Bước 2: sắp xếp
+      if (sortType === "price-asc") {
+        result.sort(function (a, b) { return a.price - b.price; });
+      } else if (sortType === "price-desc") {
+        result.sort(function (a, b) { return b.price - a.price; });
+      }
+
+      return result;
+    }
+
+    // Đưa kết quả ra màn hình
+    function renderProducts() {
+      const list = document.getElementById("product-list");
+      const countText = document.getElementById("result-count");
+      const products = getFilteredProducts();
+
+      if (products.length === 0) {
+        countText.textContent = "";
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>Không tìm thấy món ăn phù hợp.</p>
+            <p>Hãy thử từ khóa khác hoặc bỏ bớt bộ lọc.</p>
+            <button class="btn btn-primary" style="margin-top:16px" onclick="resetFilters()">Xóa bộ lọc</button>
+          </div>`;
+        return;
+      }
+
+      countText.textContent = "Hiển thị " + products.length + " món";
+      list.innerHTML = products.map(createProductCard).join("");
+    }
+
+    // Đưa mọi bộ lọc về mặc định
+    function resetFilters() {
+      document.getElementById("search-input").value = "";
+      document.getElementById("sort-select").value = "default";
+      document.getElementById("bestseller-check").checked = false;
+      currentCategory = "all";
+      updateActiveTab();
+      renderProducts();
+    }
+
+    // Chạy khi trang đã tải xong
+    document.addEventListener("DOMContentLoaded", function () {
+      // Nếu đến từ trang chủ (menu.html?category=tom-hum) thì chọn sẵn danh mục đó
+      const categoryFromUrl = getQueryParam("category");
+      const isValid = CATEGORIES.some(function (c) { return c.id === categoryFromUrl; });
+      if (isValid) {
+        currentCategory = categoryFromUrl;
+      }
+
+      renderCategoryTabs();
+      renderProducts();
+
+      // Gõ chữ, đổi sắp xếp, tick ô: cập nhật danh sách ngay
+      document.getElementById("search-input").addEventListener("input", renderProducts);
+      document.getElementById("sort-select").addEventListener("change", renderProducts);
+      document.getElementById("bestseller-check").addEventListener("change", renderProducts);
+    });
+  </script>
+</body>
+</html>

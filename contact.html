@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Liên hệ nhà hàng hải sản OCEAN SEAFOOD: địa chỉ, hotline, email, giờ mở cửa và biểu mẫu góp ý.">
+  <title>Liên hệ - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Liên hệ với chúng tôi</h1>
+      <p>Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-layout">
+
+      <!-- BÊN TRÁI: THÔNG TIN VÀ BẢN ĐỒ -->
+      <div>
+        <div class="form-box">
+          <h2>Thông tin nhà hàng</h2>
+          <!-- Nội dung do JavaScript đổ vào từ RESTAURANT_INFO (main.js) -->
+          <ul class="contact-info" id="contact-info"></ul>
+        </div>
+
+        <!-- Bản đồ vị trí mẫu (cần có mạng Internet mới hiện) -->
+        <div class="map-box">
+          <iframe
+            title="Bản đồ vị trí nhà hàng (mẫu)"
+            src="https://maps.google.com/maps?q=H%E1%BA%A3i%20Ch%C3%A2u%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </div>
+        <p style="font-size:0.85rem; color:var(--color-text-light); margin-top:8px">
+          Bản đồ chỉ mang tính minh họa khu vực mẫu.
+          <a href="https://www.google.com/maps/search/?api=1&query=H%E1%BA%A3i%20Ch%C3%A2u%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng"
+             target="_blank" rel="noopener" style="color:var(--color-primary); font-weight:600">Mở trên Google Maps</a>
+        </p>
+      </div>
+
+      <!-- BÊN PHẢI: FORM LIÊN HỆ -->
+      <div>
+        <!-- Hộp thông báo gửi thành công (ẩn cho đến khi gửi xong) -->
+        <div id="contact-success" style="display:none"></div>
+
+        <div class="form-box" id="contact-box">
+          <h2>Gửi liên hệ và góp ý</h2>
+
+          <form id="contact-form" novalidate>
+            <div class="form-group float-group" id="group-name">
+              <input type="text" id="full-name" placeholder=" " autocomplete="name">
+              <label for="full-name">Họ và tên <span class="required">*</span></label>
+              <div class="error-message"></div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group float-group" id="group-email">
+                <input type="email" id="email" placeholder=" " autocomplete="email">
+                <label for="email">Email <span class="required">*</span></label>
+                <div class="error-message"></div>
+              </div>
+              <div class="form-group float-group" id="group-phone">
+                <input type="tel" id="phone" placeholder=" " autocomplete="tel">
+                <label for="phone">Số điện thoại <span class="required">*</span></label>
+                <div class="error-message"></div>
+              </div>
+            </div>
+
+            <div class="form-group float-group" id="group-message">
+              <textarea id="message" placeholder=" " rows="4"></textarea>
+              <label for="message">Nội dung cần hỗ trợ <span class="required">*</span></label>
+              <div class="error-message"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Gửi thông tin</button>
+            <p style="font-size:0.85rem; color:var(--color-text-light); margin-top:12px; text-align:center">
+              Đây là chức năng mô phỏng: nội dung chỉ lưu trên trình duyệt này, không gửi đi đâu.
+            </p>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/form-autosave.js"></script>
+  <script src="js/qr-widget.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/intro.js"></script>
+
+  <!-- ===== JavaScript RIÊNG CỦA TRANG LIÊN HỆ ===== -->
+  <script>
+    const CONTACTS_KEY = "oceanSeafoodContacts";   // ngăn kéo lưu các tin nhắn đã gửi
+
+    /* ----- Hàm hỗ trợ kiểm tra form (trang này không nạp file form nào khác) ----- */
+    function setFieldError(groupId, message) {
+      const group = document.getElementById(groupId);
+      if (!group) return;
+      const errorBox = group.querySelector(".error-message");
+
+      if (message) {
+        group.classList.add("error");
+        if (errorBox) errorBox.textContent = message;
+      } else {
+        group.classList.remove("error");
+        if (errorBox) errorBox.textContent = "";
+      }
+    }
+
+    function isValidPhone(phone) {
+      return /^(0|\+84)[0-9]{9}$/.test(phone.replace(/\s/g, ""));
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    /* ----- Hiển thị thông tin nhà hàng (đọc từ main.js để luôn khớp với footer) ----- */
+    function renderContactInfo() {
+      const info = RESTAURANT_INFO;
+      document.getElementById("contact-info").innerHTML =
+        "<li><span>📍</span><span><strong>Địa chỉ:</strong><br>" + info.address + "</span></li>" +
+        '<li><span>📞</span><span><strong>Hotline:</strong><br><a href="tel:' + info.phoneLink + '">' + info.phone + "</a></span></li>" +
+        '<li><span>✉️</span><span><strong>Email:</strong><br><a href="mailto:' + info.email + '">' + info.email + "</a></span></li>" +
+        "<li><span>🕒</span><span><strong>Giờ mở cửa:</strong><br>" + info.hours + "</span></li>" +
+        '<li><span>🌐</span><span><strong>Mạng xã hội:</strong><br>' +
+          '<a href="' + info.facebook + '" target="_blank" rel="noopener">Facebook</a> · ' +
+          '<a href="' + info.instagram + '" target="_blank" rel="noopener">Instagram</a></span></li>';
+    }
+
+    // Nếu đã đăng nhập thì điền sẵn họ tên, email, số điện thoại
+    function prefillFromUser() {
+      const user = getCurrentUser();
+      if (!user) return;
+      if (user.name)  document.getElementById("full-name").value = user.name;
+      if (user.email) document.getElementById("email").value = user.email;
+      if (user.phone) document.getElementById("phone").value = user.phone;
+    }
+
+    /* ----- Lưu tin nhắn ----- */
+    function getContacts() {
+      try {
+        const data = localStorage.getItem(CONTACTS_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    /* ----- Xử lý khi bấm "Gửi thông tin" ----- */
+    function handleContactSubmit(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("full-name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      let isValid = true;
+
+      if (name.length < 2) {
+        setFieldError("group-name", "Vui lòng nhập họ và tên (ít nhất 2 ký tự).");
+        isValid = false;
+      } else {
+        setFieldError("group-name", "");
+      }
+
+      if (!isValidEmail(email)) {
+        setFieldError("group-email", "Email không hợp lệ (ví dụ: ten@example.com).");
+        isValid = false;
+      } else {
+        setFieldError("group-email", "");
+      }
+
+      if (!isValidPhone(phone)) {
+        setFieldError("group-phone", "Số điện thoại không hợp lệ (ví dụ: 0901234567).");
+        isValid = false;
+      } else {
+        setFieldError("group-phone", "");
+      }
+
+      if (message.length < 10) {
+        setFieldError("group-message", "Vui lòng nhập nội dung ít nhất 10 ký tự.");
+        isValid = false;
+      } else if (message.length > 1000) {
+        setFieldError("group-message", "Nội dung tối đa 1000 ký tự.");
+        isValid = false;
+      } else {
+        setFieldError("group-message", "");
+      }
+
+      if (!isValid) {
+        showToast("Vui lòng kiểm tra lại các thông tin bị báo lỗi.", "error");
+        return;
+      }
+
+      // Lưu tin nhắn với mã tham chiếu mẫu, ví dụ LH-483920
+      const contact = {
+        code: makeCode("LH"),
+        createdAt: new Date().toLocaleString("vi-VN"),
+        name: name, email: email, phone: phone, message: message
+      };
+      const contacts = getContacts();
+      contacts.push(contact);
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(contacts));
+      clearFormDraft("oceanSeafoodDraftContact");
+      showContactSuccess(contact);
+    }
+
+    // Hiện thông báo gửi thành công (chữ người dùng nhập phải qua escapeHTML)
+    function showContactSuccess(contact) {
+      document.getElementById("contact-box").style.display = "none";
+
+      const box = document.getElementById("contact-success");
+      box.innerHTML = `
+        <div class="success-box">
+          <div class="success-icon">✅</div>
+          <h3>Đã ghi nhận liên hệ!</h3>
+          <p>Cảm ơn <strong>${escapeHTML(contact.name)}</strong> đã gửi góp ý cho OCEAN SEAFOOD.</p>
+          <div>Mã tham chiếu:<br><span class="order-code">${contact.code}</span></div>
+        </div>
+        <div class="form-box">
+          <p><strong>Nội dung bạn đã gửi:</strong></p>
+          <p style="margin:8px 0 16px; white-space:pre-wrap">${escapeHTML(contact.message)}</p>
+          <div class="info-box">
+            Đây là chức năng mô phỏng nên tin nhắn không được gửi đến nhà hàng thật.
+            Cần hỗ trợ gấp, hãy gọi hotline <strong>${RESTAURANT_INFO.phone}</strong>.
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px">
+            <button class="btn btn-primary" onclick="sendAnother()">Gửi liên hệ khác</button>
+            <a href="index.html" class="btn btn-outline-blue">Về trang chủ</a>
+          </div>
+        </div>`;
+      box.style.display = "block";
+      showToast("Đã ghi nhận liên hệ của bạn!", "success");
+    }
+
+    // Quay lại form để gửi tiếp
+    function sendAnother() {
+      document.getElementById("contact-form").reset();
+      prefillFromUser();
+      document.getElementById("contact-success").style.display = "none";
+      document.getElementById("contact-box").style.display = "block";
+    }
+
+    /* ----- Khởi động ----- */
+    document.addEventListener("DOMContentLoaded", function () {
+      renderContactInfo();
+      prefillFromUser();
+      setupFormAutosave("contact-form", "oceanSeafoodDraftContact");
+
+      document.getElementById("contact-form").addEventListener("submit", handleContactSubmit);
+
+      // Sửa lại ô nào thì xóa báo lỗi của ô đó
+      ["full-name", "email", "phone", "message"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", function () {
+          const group = document.getElementById(id).closest(".form-group");
+          if (group) group.classList.remove("error");
+        });
+      });
+    });
+  </script>
+</body>
+</html>

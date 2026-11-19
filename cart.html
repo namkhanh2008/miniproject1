@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ hàng - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Giỏ hàng của bạn</h1>
+      <p>Kiểm tra lại các món đã chọn trước khi đặt hàng</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container cart-layout">
+
+      <!-- BÊN TRÁI: danh sách món (cart.js tự đổ vào #cart-items) -->
+      <div>
+        <!-- Bể cá: mỗi món trong giỏ hiện thành 1 con cá. Kéo cá ra ngoài khung để xóa món. -->
+        <div class="fishtank" id="fishtank">
+          <div class="fishtank-glass"></div>
+          <p class="fishtank-hint">Kéo một con cá ra khỏi bể để bỏ món khỏi giỏ hàng</p>
+        </div>
+
+        <div id="cart-items"></div>
+        <a href="menu.html" class="btn btn-outline-blue">← Tiếp tục mua hàng</a>
+      </div>
+      <!-- BÊN PHẢI: khung tổng tiền -->
+      <aside class="order-summary">
+        <h3>Tóm tắt đơn hàng</h3>
+
+        <div class="summary-row">
+          <span>Tạm tính</span>
+          <span id="summary-subtotal">0đ</span>
+        </div>
+        <div class="summary-row">
+          <span>Giảm giá</span>
+          <span id="summary-discount">-0đ</span>
+        </div>
+        <div class="summary-row">
+          <span>Phí giao hàng (mẫu)</span>
+          <span id="summary-shipping">0đ</span>
+        </div>
+        <div class="summary-row total">
+          <span>Tổng thanh toán</span>
+          <span id="summary-total">0đ</span>
+        </div>
+
+        <!-- Nhập mã giảm giá -->
+        <label for="coupon-input" style="font-weight:500">Mã giảm giá</label>
+        <div class="coupon-box">
+          <input type="text" id="coupon-input" placeholder="Ví dụ: OCEAN10" autocomplete="off">
+          <button class="btn btn-gold btn-sm" onclick="applyCouponFromInput()">Áp dụng</button>
+        </div>
+        <p id="coupon-message" style="font-size:0.9rem; min-height:22px"></p>
+
+        <p style="font-size:0.85rem; color:var(--color-text-light); margin:8px 0 16px">
+          Mã thử nghiệm: <strong>OCEAN10</strong>, <strong>WELCOME50</strong> (đơn từ 300.000đ),
+          <strong>FAMILY100</strong> (đơn từ 1.000.000đ).<br>
+          Miễn phí giao hàng cho đơn từ 500.000đ.
+        </p>
+
+        <button class="btn btn-primary btn-block" onclick="goToCheckout()">Tiến hành đặt hàng</button>
+      </aside>
+
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/fishtank.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/intro.js"></script>
+</body>
+</html>

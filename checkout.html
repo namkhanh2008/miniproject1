@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt hàng - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Đặt hàng</h1>
+      <p>Điền thông tin để hoàn tất đơn hàng</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Hộp thông báo đặt hàng thành công (ẩn cho đến khi đặt xong) -->
+      <div id="order-success" style="display:none"></div>
+
+      <div class="cart-layout" id="checkout-layout">
+
+        <!-- BÊN TRÁI: FORM ĐẶT HÀNG -->
+        <div class="form-box">
+          <h2>Thông tin đặt hàng</h2>
+
+          <form id="checkout-form" novalidate>
+
+            <div class="form-row">
+              <div class="form-group" id="group-name">
+                <label for="full-name">Họ và tên <span class="required">*</span></label>
+                <input type="text" id="full-name" placeholder="Nguyễn Văn A" autocomplete="name">
+                <div class="error-message"></div>
+              </div>
+              <div class="form-group" id="group-phone">
+                <label for="phone">Số điện thoại <span class="required">*</span></label>
+                <input type="tel" id="phone" placeholder="0901234567" autocomplete="tel">
+                <div class="error-message"></div>
+              </div>
+            </div>
+
+            <div class="form-group" id="group-email">
+              <label for="email">Email <span class="required">*</span></label>
+              <input type="email" id="email" placeholder="ten@example.com" autocomplete="email">
+              <div class="error-message"></div>
+            </div>
+
+            <!-- Phương thức nhận hàng -->
+            <div class="form-group">
+              <label>Phương thức nhận hàng</label>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input type="radio" name="delivery" value="delivery" checked> 🚚 Giao hàng tận nơi
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="delivery" value="pickup"> 🏪 Nhận tại nhà hàng
+                </label>
+              </div>
+            </div>
+
+            <!-- Địa chỉ: tự ẩn khi chọn "Nhận tại nhà hàng" -->
+            <div class="form-group" id="group-address">
+              <label for="address">Địa chỉ giao hàng <span class="required">*</span></label>
+              <input type="text" id="address" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" autocomplete="street-address">
+              <div class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="note">Ghi chú</label>
+              <textarea id="note" placeholder="Ví dụ: ít cay, giao giờ hành chính..."></textarea>
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <div class="form-group">
+              <label>Phương thức thanh toán</label>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input type="radio" name="payment" value="cod" checked> 💵 Thanh toán khi nhận hàng (COD)
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="payment" value="bank"> 🏦 Chuyển khoản
+                </label>
+              </div>
+
+              <!-- Thông tin chuyển khoản MẪU (chỉ hiện khi chọn Chuyển khoản) -->
+              <div class="info-box" id="bank-info" style="display:none">
+                <strong>Thông tin chuyển khoản (mẫu, không phải tài khoản thật)</strong><br>
+                Ngân hàng: MOMO<br>
+                Số tài khoản: 0342338888<br>
+                Chủ tài khoản: NHA HANG OCEAN SEAFOOD<br>
+                Nội dung: Mã đơn hàng sẽ hiện sau khi xác nhận
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Xác nhận đặt hàng</button>
+            <p style="font-size:0.85rem; color:var(--color-text-light); margin-top:12px; text-align:center">
+              Đây là chức năng mô phỏng, không thanh toán tiền thật.
+            </p>
+          </form>
+        </div>
+
+        <!-- BÊN PHẢI: TÓM TẮT ĐƠN HÀNG -->
+        <aside class="order-summary">
+          <h3>Đơn hàng của bạn</h3>
+          <div id="checkout-items"></div>
+
+          <div class="summary-row">
+            <span>Tạm tính</span>
+            <span id="summary-subtotal">0đ</span>
+          </div>
+          <div class="summary-row">
+            <span>Giảm giá</span>
+            <span id="summary-discount">-0đ</span>
+          </div>
+          <div class="summary-row">
+            <span>Phí giao hàng</span>
+            <span id="summary-shipping">0đ</span>
+          </div>
+          <div class="summary-row total">
+            <span>Tổng thanh toán</span>
+            <span id="summary-total">0đ</span>
+          </div>
+
+          <a href="cart.html" class="btn btn-outline-blue btn-block btn-sm">← Sửa giỏ hàng</a>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/form-autosave.js"></script>
+  <script src="js/checkout.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/intro.js"></script>
+</body>
+</html>

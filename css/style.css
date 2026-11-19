@@ -1,0 +1,390 @@
+/* =====================================================
+   OCEAN SEAFOOD - FILE: css/style.css
+   Nội dung: biến màu, reset, bố cục chung, header,
+             banner, footer, nút nổi
+   ===================================================== */
+
+/* ---------- 1. BIẾN MÀU VÀ CÀI ĐẶT CHUNG ---------- */
+/* Biến (variable) giúp đổi màu cả website chỉ bằng cách sửa 1 chỗ */
+:root {
+  --color-primary: #0a4d8c;        /* xanh đại dương đậm */
+  --color-primary-dark: #062f57;   /* xanh navy (dùng cho footer) */
+  --color-primary-light: #e8f3fb;  /* xanh nhạt (nền phụ) */
+  --color-gold: #c9a227;           /* vàng ánh kim */
+  --color-gold-light: #e6c65c;     /* vàng sáng khi hover */
+  --color-white: #ffffff;
+  --color-text: #2b3a4a;           /* màu chữ chính */
+  --color-text-light: #6b7b8c;     /* màu chữ phụ */
+  --color-border: #dce6ef;         /* màu viền */
+  --color-danger: #d64545;         /* màu đỏ cho lỗi */
+  --color-success: #2e9e6b;        /* màu xanh lá cho thành công */
+
+  --shadow-sm: 0 2px 8px rgba(10, 77, 140, 0.08);
+  --shadow-md: 0 6px 20px rgba(10, 77, 140, 0.15);
+  --radius: 12px;                  /* độ bo góc */
+  --header-height: 72px;
+  --transition: all 0.3s ease;
+}
+
+/* ---------- 2. RESET: xóa khoảng cách mặc định của trình duyệt ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* width gồm cả padding và border, dễ tính toán hơn */
+}
+
+html {
+  scroll-behavior: smooth; /* cuộn trang mượt */
+}
+
+body {
+  font-family: "Be Vietnam Pro", "Segoe UI", Tahoma, Arial, sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  line-height: 1.6;
+  /* chừa chỗ cho header cố định ở trên cùng */
+  padding-top: var(--header-height);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  color: var(--color-primary-dark);
+  line-height: 1.3;
+}
+
+/* ---------- 3. BỐ CỤC CHUNG ---------- */
+/* Khung giữ nội dung ở giữa, không tràn hết màn hình */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Mỗi khối nội dung lớn của trang */
+.section {
+  padding: 70px 0;
+}
+
+.section-light {
+  background-color: var(--color-primary-light);
+}
+
+/* Tiêu đề của từng khối */
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--color-text-light);
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+/* Gạch vàng nhỏ bên dưới tiêu đề */
+.section-title::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 3px;
+  background-color: var(--color-gold);
+  margin: 12px auto 0;
+}
+
+/* Lưới chia cột: tự động xuống dòng khi màn hình hẹp */
+.grid {
+  display: grid;
+  gap: 24px;
+}
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ---------- 4. HEADER (thanh menu trên cùng) ---------- */
+.header {
+  position: fixed;          /* cố định khi cuộn trang */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  z-index: 1000;            /* luôn nằm trên các thành phần khác */
+}
+
+.header-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 1px;
+}
+.logo span {
+  color: var(--color-gold);
+}
+
+/* Menu điều hướng */
+.nav {
+  display: flex;
+  gap: 28px;
+}
+
+.nav a {
+  font-weight: 500;
+  padding: 6px 0;
+  position: relative;
+  transition: var(--transition);
+}
+
+/* Đường gạch vàng chạy ra khi rê chuột */
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-gold);
+  transition: var(--transition);
+}
+
+.nav a:hover,
+.nav a.active {
+  color: var(--color-primary);
+}
+
+.nav a:hover::after,
+.nav a.active::after {
+  width: 100%;
+}
+
+/* Cụm bên phải: giỏ hàng + đăng nhập */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Biểu tượng giỏ hàng */
+.cart-icon {
+  position: relative;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.cart-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Chấm đỏ hiện số món trong giỏ */
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background-color: var(--color-gold);
+  color: var(--color-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Nút ba gạch cho điện thoại (mặc định ẩn, responsive.css sẽ bật lên) */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* ---------- 5. BANNER CHÍNH TRANG CHỦ ---------- */
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  color: var(--color-white);
+  /* Lớp phủ xanh + ảnh nền. Nếu chưa có ảnh, vẫn hiện nền xanh gradient */
+  background:
+    linear-gradient(rgba(6, 47, 87, 0.65), rgba(6, 47, 87, 0.65)),
+    url("../images/banner/banner.jpg") center / cover no-repeat,
+    linear-gradient(135deg, #0a4d8c, #062f57);
+}
+
+.hero-content {
+  max-width: 650px;
+}
+
+.hero h1 {
+  color: var(--color-white);
+  font-size: 3rem;
+  margin-bottom: 18px;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Banner nhỏ ở đầu các trang con (Thực đơn, Giỏ hàng, ...) */
+.page-banner {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--color-white);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+}
+.page-banner h1 {
+  color: var(--color-white);
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+.page-banner p {
+  opacity: 0.9;
+}
+
+/* ---------- 6. FOOTER (chân trang) ---------- */
+.footer {
+  background-color: var(--color-primary-dark);
+  color: #cdd9e5;
+  padding-top: 60px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 30px;
+  padding-bottom: 40px;
+}
+
+.footer h3 {
+  color: var(--color-gold);
+  font-size: 1.2rem;
+  margin-bottom: 18px;
+}
+
+.footer p,
+.footer li {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.footer a:hover {
+  color: var(--color-gold-light);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.9rem;
+}
+
+/* ---------- 7. NÚT NỔI: LÊN ĐẦU TRANG + LIÊN HỆ NHANH ---------- */
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  z-index: 900;
+  /* Mặc định ẩn, main.js sẽ thêm class "show" khi cuộn xuống */
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+}
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+.back-to-top:hover {
+  background-color: var(--color-gold);
+}
+
+.quick-contact {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 23px;
+  background-color: var(--color-gold);
+  color: var(--color-white);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-md);
+  z-index: 900;
+  transition: var(--transition);
+}
+.quick-contact:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+/* ---------- 8. HIỆU ỨNG XUẤT HIỆN NHẸ KHI CUỘN TRANG ---------- */
+/* Phần tử có class "reveal" sẽ trượt nhẹ lên khi xuất hiện */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+

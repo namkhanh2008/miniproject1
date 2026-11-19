@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Phòng chờ OCEAN SEAFOOD: chơi game câu cá biển với 15 loài sinh vật trong lúc chờ bàn.">
+  <title>Phòng chờ - Câu cá biển - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/fishing-game.css">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Phòng chờ OCEAN SEAFOOD</h1>
+      <p>Trong lúc chờ bàn, thử tài câu 15 loài sinh vật biển nhé!</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="game-shell">
+
+        <!-- Thanh trạng thái: điểm, thời gian, điểm cao nhất -->
+        <div class="game-hud">
+          <div class="game-stat"><span class="game-stat-label">Điểm</span><span id="game-score">0</span></div>
+          <div class="game-stat"><span class="game-stat-label">Thời gian</span><span id="game-time">60</span>s</div>
+          <div class="game-stat"><span class="game-stat-label">Kỷ lục</span><span id="game-best">0</span></div>
+        </div>
+
+        <!-- Khu vực chơi: cá bơi qua, bấm để câu -->
+        <div class="game-ocean" id="game-ocean">
+
+          <!-- Màn hình bắt đầu -->
+          <div class="game-overlay" id="game-start">
+            <h2>🎣 Câu cá biển</h2>
+            <p>Bấm trúng sinh vật để ghi điểm. Tránh sứa và rùa biển nhé!</p>
+            <button type="button" class="btn btn-gold" id="game-start-btn">Bắt đầu chơi (60 giây)</button>
+          </div>
+
+          <!-- Màn hình kết thúc -->
+          <div class="game-overlay" id="game-end" style="display:none">
+            <h2>Hết giờ!</h2>
+            <p>Bạn đạt được <strong id="game-final-score">0</strong> điểm.</p>
+            <p id="game-new-best" class="game-new-best" style="display:none">🏆 Kỷ lục mới!</p>
+            <!-- Chỉ hiện khi điểm lọt Top 5 -->
+            <div class="game-name-box" id="game-name-box" style="display:none">
+              <p>🎉 Điểm của bạn lọt Top 5! Nhập tên để lưu lại:</p>
+              <form id="game-name-form">
+                <input type="text" id="game-name-input" maxlength="20" placeholder="Tên của bạn" autocomplete="off">
+                <button type="submit" class="btn btn-gold btn-sm">Lưu điểm</button>
+              </form>
+            </div>
+            <div class="game-end-actions">
+              <button type="button" class="btn btn-gold" id="game-restart-btn">Chơi lại</button>
+              <a href="booking.html" class="btn btn-primary">Đặt bàn ngay</a>
+              <a href="menu.html" class="btn btn-outline-blue">Xem thực đơn</a>
+            </div>
+          </div>
+
+          <!-- Điểm cộng/trừ bay lên khi bấm trúng -->
+          <div class="game-float-layer" id="game-float-layer"></div>
+        </div>
+
+        <!-- Chú giải các loài -->
+        <div class="game-legend" id="game-legend"></div>
+        <!-- Bảng xếp hạng -->
+        <div class="game-leaderboard">
+          <h3>🏆 Bảng xếp hạng (Top 5)</h3>
+          <ol id="game-leaderboard-list"></ol>
+        </div>
+
+      </div>
+    </div>
+  </section>
+    <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">🎡 Vòng quay may mắn</h2>
+      <p class="section-subtitle">Mỗi ngày một lượt quay, biết đâu trúng mã giảm giá!</p>
+
+      <div class="wheel-shell">
+        <div class="wheel-wrap">
+          <canvas id="wheel-canvas" width="300" height="300"></canvas>
+          <div class="wheel-pointer">▼</div>
+        </div>
+        <button type="button" class="btn btn-gold btn-glow" id="wheel-spin-btn">Quay ngay</button>
+        <p id="wheel-message" class="wheel-message"></p>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/lucky-wheel.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/fishing-game.js"></script>
+</body>
+</html>

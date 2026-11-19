@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tin tức hải sản, bí quyết chế biến, ưu đãi, combo và sự kiện tại OCEAN SEAFOOD.">
+  <title>Tin tức và khuyến mãi - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Tin tức và khuyến mãi</h1>
+      <p>Cập nhật hải sản theo mùa, bí quyết chế biến, ưu đãi và sự kiện</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Các nút lọc nhóm bài viết: JavaScript tạo bên dưới -->
+      <div class="category-tabs" id="news-tabs"></div>
+
+      <!-- Danh sách bài viết -->
+      <div class="grid grid-3" id="news-list"></div>
+
+      <p style="text-align:center; font-size:0.85rem; color:var(--color-text-light); margin-top:30px">
+        Các bài viết là nội dung mẫu phục vụ dự án học tập.
+      </p>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/intro.js"></script>
+
+  <!-- ===== JavaScript RIÊNG CỦA TRANG TIN TỨC ===== -->
+  <script>
+    // Các nhóm bài viết
+    const NEWS_CATEGORIES = [
+      { id: "all",    name: "Tất cả" },
+      { id: "news",   name: "Tin tức hải sản" },
+      { id: "recipe", name: "Bí quyết chế biến" },
+      { id: "promo",  name: "Ưu đãi" },
+      { id: "combo",  name: "Combo" },
+      { id: "event",  name: "Sự kiện" }
+    ];
+
+    // Dữ liệu bài viết mẫu.
+    // link: nút hành động (không bắt buộc), gồm chữ trên nút và địa chỉ trang.
+    const NEWS = [
+      {
+        id: 1, category: "news", date: "10/11/2026",
+        title: "Mùa ghẹ xanh: cách chọn ghẹ chắc thịt, nhiều gạch",
+        image: "images/news/ghe-xanh.jpg",
+        intro: "Vào mùa ghẹ, thịt ghẹ ngọt và chắc hơn. Cùng học cách chọn ghẹ ngon.",
+        content: "Khi chọn ghẹ, hãy ưu tiên con còn hoạt động nhanh nhẹn, mai cứng, cầm nặng tay và càng chắc. Ghẹ cái thường có gạch, ghẹ đực thường nhiều thịt ở càng. Nên chọn ghẹ còn sống để thịt ngọt và an toàn hơn.",
+        link: { text: "Thử món ghẹ rang me", href: "product-detail.html?id=3" }
+      },
+      {
+        id: 2, category: "recipe", date: "06/11/2026",
+        title: "3 mẹo hấp cua giữ trọn vị ngọt",
+        image: "images/news/hap-cua.jpg",
+        intro: "Hấp cua tưởng đơn giản nhưng có vài mẹo nhỏ giúp thịt cua ngọt và không bị khô.",
+        content: "Nên hấp khi nước đã sôi, xếp cua úp mai xuống để gạch không chảy. Thêm vài lát gừng, sả hoặc chút bia để khử mùi tanh. Cua cỡ vừa thường chín sau khoảng 15 phút, hạn chế mở nắp liên tục để hơi nóng không thoát ra.",
+        link: { text: "Thử món cua hấp bia", href: "product-detail.html?id=2" }
+      },
+      {
+        id: 3, category: "promo", date: "01/11/2026",
+        title: "Khách hàng mới giảm 50.000đ",
+        image: "images/news/uu-dai-khach-moi.jpg",
+        intro: "Chào mừng thực khách lần đầu đặt món trực tuyến với ưu đãi hấp dẫn.",
+        content: "Nhập mã WELCOME50 ở trang giỏ hàng để được giảm 50.000đ cho đơn từ 300.000đ. Ngoài ra mã OCEAN10 giảm 10% cho mọi đơn hàng không yêu cầu giá trị tối thiểu. Mỗi đơn áp dụng một mã.",
+        link: { text: "Xem thực đơn", href: "menu.html" }
+      },
+      {
+        id: 4, category: "combo", date: "28/10/2026",
+        title: "Combo hải sản gia đình: tiết kiệm hơn gọi lẻ",
+        image: "images/news/combo-gia-dinh.jpg",
+        intro: "Một mâm đủ tôm, cua, ốc, súp và miến xào cho 4 đến 5 người.",
+        content: "Combo gồm tôm sú, cua biển, ốc hương, súp cua và miến xào hải sản, được dọn lần lượt để bữa ăn trọn vẹn. Đơn từ 1.000.000đ còn dùng được mã FAMILY100 để giảm thêm 100.000đ.",
+        link: { text: "Xem combo", href: "product-detail.html?id=15" }
+      },
+      {
+        id: 5, category: "event", date: "25/10/2026",
+        title: "Đêm nhạc acoustic bên hải sản cuối tuần",
+        image: "images/news/dem-nhac.jpg",
+        intro: "Thưởng thức hải sản cùng những giai điệu nhẹ nhàng vào tối thứ Bảy.",
+        content: "Mỗi tối thứ Bảy, nhà hàng có chương trình nhạc acoustic tại khu ngoài trời. Không gian yên tĩnh, phù hợp cho cặp đôi và nhóm bạn. Nên đặt bàn trước vì chỗ ngồi có hạn.",
+        link: { text: "Đặt bàn ngay", href: "booking.html" }
+      },
+      {
+        id: 6, category: "recipe", date: "20/10/2026",
+        title: "Bảo quản hải sản tươi tại nhà đúng cách",
+        image: "images/news/bao-quan.jpg",
+        intro: "Mua hải sản về chưa nấu ngay? Hãy bảo quản đúng để giữ độ tươi.",
+        content: "Hải sản tươi nên dùng trong vòng 1 đến 2 ngày. Tôm, cá, mực bọc kín và để ngăn mát, tránh để lẫn với thực phẩm chín. Không nên rã đông rồi cấp đông lại nhiều lần vì dễ giảm chất lượng và mất an toàn."
+      },
+      {
+        id: 7, category: "news", date: "15/10/2026",
+        title: "Hàu sữa vào mùa: vì sao nên ăn nướng?",
+        image: "images/news/hau-sua.jpg",
+        intro: "Hàu sữa béo ngậy, nướng mỡ hành là cách thưởng thức được nhiều người yêu thích.",
+        content: "Hàu nướng chín kỹ vừa thơm vừa an toàn hơn ăn sống. Mỡ hành và đậu phộng rang làm tăng độ béo, ăn kèm rau thơm và chút chanh giúp cân bằng vị.",
+        link: { text: "Thử hàu nướng mỡ hành", href: "product-detail.html?id=9" }
+      },
+      {
+        id: 8, category: "promo", date: "10/10/2026",
+        title: "Giảm 10% toàn thực đơn với mã OCEAN10",
+        image: "images/news/ocean10.jpg",
+        intro: "Một mã giảm giá dùng cho mọi đơn hàng, không cần đủ giá trị tối thiểu.",
+        content: "Nhập mã OCEAN10 tại ô mã giảm giá ở trang giỏ hàng, hệ thống sẽ tự tính số tiền được giảm. Nhớ rằng đơn từ 500.000đ còn được miễn phí giao hàng.",
+        link: { text: "Mua sắm ngay", href: "menu.html" }
+      }
+    ];
+
+    // Nhóm đang chọn
+    let currentNewsCategory = "all";
+
+    // Tên nhóm hiển thị từ mã nhóm
+    function getNewsCategoryName(id) {
+      const found = NEWS_CATEGORIES.find(function (c) { return c.id === id; });
+      return found ? found.name : "";
+    }
+
+    // Tạo hàng nút lọc
+    function renderNewsTabs() {
+      const container = document.getElementById("news-tabs");
+      container.innerHTML = NEWS_CATEGORIES.map(function (category) {
+        const active = category.id === currentNewsCategory ? " active" : "";
+        return '<button class="tab-btn' + active + '" data-category="' + category.id + '">' + category.name + "</button>";
+      }).join("");
+
+      container.querySelectorAll(".tab-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          currentNewsCategory = button.dataset.category;
+          renderNewsTabs();
+          renderNews();
+        });
+      });
+    }
+
+    // Tạo danh sách bài viết theo nhóm đang chọn
+    function renderNews() {
+      const list = document.getElementById("news-list");
+      const articles = NEWS.filter(function (article) {
+        return currentNewsCategory === "all" || article.category === currentNewsCategory;
+      });
+
+      if (articles.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">📰</div><p>Chưa có bài viết trong nhóm này.</p></div>';
+        return;
+      }
+
+      list.innerHTML = articles.map(function (article) {
+        const linkHTML = article.link
+          ? '<a href="' + article.link.href + '" class="btn btn-gold btn-sm" style="margin-top:10px">' + article.link.text + "</a>"
+          : "";
+
+        return `
+          <div class="news-card">
+            <img src="${article.image}" alt="${article.title}" loading="lazy" onerror="handleImageError(this)">
+            <div class="news-body">
+              <span class="news-date">${article.date} · ${getNewsCategoryName(article.category)}</span>
+              <h3>${article.title}</h3>
+              <p>${article.intro}</p>
+              <p id="news-full-${article.id}" style="display:none; margin-top:8px">${article.content}</p>
+              <div>
+                <button class="btn btn-outline-blue btn-sm" style="margin-top:10px"
+                        id="news-btn-${article.id}" onclick="toggleArticle(${article.id})">Đọc tiếp</button>
+                ${linkHTML}
+              </div>
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    // Mở rộng hoặc thu gọn nội dung bài viết
+    function toggleArticle(id) {
+      const full = document.getElementById("news-full-" + id);
+      const button = document.getElementById("news-btn-" + id);
+      const isHidden = full.style.display === "none";
+
+      full.style.display = isHidden ? "block" : "none";
+      button.textContent = isHidden ? "Thu gọn" : "Đọc tiếp";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      renderNewsTabs();
+      renderNews();
+    });
+  </script>
+</body>
+</html>

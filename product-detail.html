@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết món ăn - OCEAN SEAFOOD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <!-- Đường dẫn: Trang chủ > Thực đơn > Tên món -->
+  <section class="page-banner">
+    <div class="container">
+      <h1>Chi tiết món ăn</h1>
+      <p id="breadcrumb">
+        <a href="index.html">Trang chủ</a> › <a href="menu.html">Thực đơn</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Nội dung chi tiết món: JavaScript đổ vào đây -->
+  <section class="section">
+    <div class="container" id="product-detail"></div>
+  </section>
+
+  <!-- Đánh giá khách hàng (mẫu) -->
+  <section class="section section-light" id="review-section" style="display:none">
+    <div class="container">
+      <h2 class="section-title">Đánh giá của khách hàng</h2>
+      <p class="section-subtitle">Nhận xét mẫu phục vụ mục đích trình diễn.</p>
+      <div class="grid grid-3" id="review-list"></div>
+    </div>
+  </section>
+
+  <!-- Các món liên quan -->
+  <section class="section" id="related-section" style="display:none">
+    <div class="container">
+      <h2 class="section-title">Có thể bạn cũng thích</h2>
+      <p class="section-subtitle">Những món cùng nhóm hoặc được nhiều khách chọn kèm.</p>
+      <div class="grid grid-3" id="related-list"></div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/dark-mode.js"></script>
+  <script src="js/sound-fx.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/transition.js"></script>
+  <script src="js/drag-cart.js"></script>
+  <script src="js/intro.js"></script>
+
+  <!-- ===== JavaScript RIÊNG CỦA TRANG CHI TIẾT ===== -->
+  <script>
+    let currentProduct = null;   // món đang xem
+    let detailQuantity = 1;      // số lượng khách chọn
+
+    // Hiển thị thông tin chi tiết món ăn
+    function renderProductDetail() {
+      const container = document.getElementById("product-detail");
+
+      // Lấy id từ thanh địa chỉ: product-detail.html?id=5 -> "5"
+      currentProduct = getProductById(getQueryParam("id"));
+
+      // Không có món thì báo và dừng lại
+      if (!currentProduct) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🍽️</div>
+            <p>Không tìm thấy món ăn bạn yêu cầu.</p>
+            <a href="menu.html" class="btn btn-primary" style="margin-top:16px">Quay lại thực đơn</a>
+          </div>`;
+        return;
+      }
+
+      const p = currentProduct;
+      const soldOut = !p.inStock;
+
+      // Đổi tiêu đề tab trình duyệt và đường dẫn phía trên
+      document.title = p.name + " - OCEAN SEAFOOD";
+      document.getElementById("breadcrumb").innerHTML =
+        '<a href="index.html">Trang chủ</a> › <a href="menu.html">Thực đơn</a> › ' + p.name;
+
+      container.innerHTML = `
+        <div class="detail-layout">
+          <div class="detail-image">
+            <img src="${p.image}" alt="${p.name}" onerror="handleImageError(this)">
+          </div>
+
+          <div class="detail-info">
+            <p style="color:var(--color-gold); font-weight:600">${getCategoryName(p.category)}</p>
+            <h1>${p.name}</h1>
+            <div class="rating">${getStars(p.rating)} <small>${p.rating} / 5 (${p.reviews} đánh giá)</small></div>
+            <div class="product-price">${formatPrice(p.price)}</div>
+
+            <p class="${soldOut ? "status-soldout" : "status-instock"}">
+              ${soldOut ? "✖ Tạm hết hàng" : "✔ Còn hàng"}
+            </p>
+
+            <h3>Mô tả</h3>
+            <p>${p.description}</p>
+
+            <h3>Thành phần</h3>
+            <p>${p.ingredients}</p>
+
+            <h3>Cách chế biến</h3>
+            <p>${p.cooking}</p>
+            <h3>Đánh giá của bạn</h3>
+<div class="star-rate" id="star-rate" data-product-id="${p.id}">
+  <span class="star-btn" data-value="1">★</span>
+  <span class="star-btn" data-value="2">★</span>
+  <span class="star-btn" data-value="3">★</span>
+  <span class="star-btn" data-value="4">★</span>
+  <span class="star-btn" data-value="5">★</span>
+  <span class="star-rate-text" id="star-rate-text">Chạm vào sao để đánh giá món này</span>
+</div>
+
+            <div class="detail-buy">
+              <div class="qty-control">
+                <button onclick="changeDetailQuantity(-1)" aria-label="Giảm">−</button>
+                <span id="detail-qty">1</span>
+                <button onclick="changeDetailQuantity(1)" aria-label="Tăng">+</button>
+              </div>
+              <button class="btn btn-primary" onclick="addDetailToCart()" ${soldOut ? "disabled" : ""}>
+                ${soldOut ? "Hết hàng" : "Thêm vào giỏ hàng"}
+              </button>
+              <button class="btn btn-gold" onclick="buyNow()" ${soldOut ? "disabled" : ""}>Mua ngay</button>
+            </div>
+          </div>
+        </div>`;
+    
+      setupStarRating(p.id);
+      renderReviews(p);
+      renderRelated(p);
+    }
+
+    // Tăng giảm số lượng (tối thiểu 1, tối đa 99)
+    function changeDetailQuantity(delta) {
+      detailQuantity = Math.min(99, Math.max(1, detailQuantity + delta));
+      document.getElementById("detail-qty").textContent = detailQuantity;
+    }
+
+    // Thêm vào giỏ theo số lượng đã chọn (hàm addToCart nằm trong cart.js)
+    function addDetailToCart() {
+      if (currentProduct) addToCart(currentProduct.id, detailQuantity);
+    }
+
+    // Thêm vào giỏ rồi đi thẳng tới trang giỏ hàng
+    function buyNow() {
+      if (!currentProduct || !currentProduct.inStock) return;
+      addToCart(currentProduct.id, detailQuantity);
+      window.location.href = "cart.html";
+    }
+
+    // Đánh giá mẫu của khách hàng
+    function renderReviews(product) {
+      const reviews = [
+        { name: "Phạm Thanh Hằng", stars: 5, text: "Món " + product.name + " rất tươi và vừa miệng. Phần ăn đầy đặn, trình bày đẹp mắt." },
+        { name: "Đỗ Hoàng Nam",    stars: 5, text: "Đi cùng gia đình, ai cũng khen ngon. Nhân viên tư vấn nhiệt tình, lên món nhanh." },
+        { name: "Vũ Ngọc Lan",     stars: 4, text: "Hương vị đậm đà, giá hợp lý so với chất lượng. Sẽ giới thiệu thêm cho bạn bè." }
+      ];
+
+      document.getElementById("review-list").innerHTML = reviews.map(function (review) {
+        return `
+          <div class="review-card">
+            <div class="rating">${getStars(review.stars)}</div>
+            <p>"${review.text}"</p>
+            <div class="review-name">${review.name}</div>
+          </div>`;
+      }).join("");
+
+      document.getElementById("review-section").style.display = "block";
+    }
+
+    // Các món liên quan (hàm getRelatedProducts nằm trong products.js)
+    function renderRelated(product) {
+      const related = getRelatedProducts(product, 3);
+      document.getElementById("related-list").innerHTML = related.map(createProductCard).join("");
+      document.getElementById("related-section").style.display = "block";
+    }
+    function setupStarRating(productId) {
+  const RATE_KEY = "oceanSeafoodMyRatings";
+  const box = document.getElementById("star-rate");
+  const stars = box.querySelectorAll(".star-btn");
+  const text = document.getElementById("star-rate-text");
+
+  function getMyRatings() {
+    try { return JSON.parse(localStorage.getItem(RATE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function paintStars(value) {
+    stars.forEach(function (star) {
+      star.classList.toggle("filled", Number(star.dataset.value) <= value);
+    });
+  }
+
+  const saved = getMyRatings()[productId];
+  if (saved) {
+    paintStars(saved);
+    text.textContent = "Bạn đã đánh giá " + saved + " sao. Cảm ơn bạn!";
+  }
+
+  stars.forEach(function (star) {
+    star.addEventListener("mouseenter", function () { paintStars(Number(star.dataset.value)); });
+    star.addEventListener("mouseleave", function () { paintStars(getMyRatings()[productId] || 0); });
+    star.addEventListener("click", function () {
+      const value = Number(star.dataset.value);
+      const ratings = getMyRatings();
+      ratings[productId] = value;
+      localStorage.setItem(RATE_KEY, JSON.stringify(ratings));
+      paintStars(value);
+      text.textContent = "Cảm ơn bạn đã đánh giá " + value + " sao!";
+      star.classList.add("star-pop");
+      setTimeout(function () { star.classList.remove("star-pop"); }, 400);
+      if (window.SoundFX) SoundFX.playCatch(10);
+    });
+  });
+}
+
+    document.addEventListener("DOMContentLoaded", renderProductDetail);
+  </script>
+</body>
+</html>

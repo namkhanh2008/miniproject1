@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tự xây Combo - OCEAN SEAFOOD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Tự xây Combo của riêng bạn</h1>
+      <p>Chọn từ 3 món trở lên để được tự động giảm giá</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container cart-layout">
+      <div>
+        <div class="grid grid-3" id="combo-product-list"></div>
+      </div>
+
+      <aside class="order-summary">
+        <h3>Combo của bạn</h3>
+        <div id="combo-selected-list"></div>
+        <div class="summary-row"><span>Số món đã chọn</span><span id="combo-count">0</span></div>
+        <div class="summary-row"><span>Tạm tính</span><span id="combo-subtotal">0đ</span></div>
+        <div class="summary-row total"><span>Ưu đãi hiện tại</span><span id="combo-discount-label">Chưa đủ điều kiện</span></div>
+        <button type="button" class="btn btn-primary btn-block" id="combo-add-btn" disabled>Thêm cả combo vào giỏ hàng</button>
+        <p style="font-size:0.8rem; color:var(--color-text-light); margin-top:10px">
+          Chọn 3-4 món: giảm 5%. Chọn 5 món trở lên: giảm 10%.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    var selected = {};   // { productId: quantity }
+
+    function renderComboProducts() {
+      var list = document.getElementById("combo-product-list");
+      var items = PRODUCTS.filter(function (p) { return p.inStock; });
+
+      list.innerHTML = items.map(function (p) {
+        var qty = selected[p.id] || 0;
+        return (
+          '<div class="product-card">' +
+            '<div class="product-image"><img src="' + p.image + '" alt="' + p.name + '" onerror="handleImageError(this)"></div>' +
+            '<div class="product-info">' +
+              "<h3>" + p.name + "</h3>" +
+              '<div class="product-price">' + formatPrice(p.price) + "</div>" +
+              '<div class="qty-control" style="margin-top:8px">' +
+                '<button type="button" onclick="changeComboQty(' + p.id + ', -1)">−</button>' +
+                '<span id="combo-qty-' + p.id + '">' + qty + "</span>" +
+                '<button type="button" onclick="changeComboQty(' + p.id + ', 1)">+</button>' +
+              "</div>" +
+            "</div>" +
+          "</div>"
+        );
+      }).join("");
+    }
+
+    function changeComboQty(id, delta) {
+      var next = (selected[id] || 0) + delta;
+      if (next <= 0) { delete selected[id]; next = 0; }
+      else { selected[id] = Math.min(next, 20); }
+
+      document.getElementById("combo-qty-" + id).textContent = selected[id] || 0;
+      renderComboSummary();
+    }
+
+    function renderComboSummary() {
+      var ids = Object.keys(selected);
+      var subtotal = 0;
+      var listHtml = "";
+
+      ids.forEach(function (id) {
+        var product = getProductById(id);
+        if (!product) return;
+        var lineTotal = product.price * selected[id];
+        subtotal += lineTotal;
+        listHtml += '<div class="summary-row"><span>' + product.name + " ×" + selected[id] + "</span><span>" + formatPrice(lineTotal) + "</span></div>";
+      });
+
+      document.getElementById("combo-selected-list").innerHTML = listHtml || "<p style='color:var(--color-text-light)'>Chưa chọn món nào</p>";
+      document.getElementById("combo-count").textContent = ids.length;
+      document.getElementById("combo-subtotal").textContent = formatPrice(subtotal);
+
+      var distinctCount = ids.length;
+      var discountLabel = "Chưa đủ điều kiện";
+      var couponCode = null;
+      if (distinctCount >= 5) { discountLabel = "Giảm 10% (mã COMBO10)"; couponCode = "COMBO10"; }
+      else if (distinctCount >= 3) { discountLabel = "Giảm 5% (mã COMBO5)"; couponCode = "COMBO5"; }
+
+      document.getElementById("combo-discount-label").textContent = discountLabel;
+      document.getElementById("combo-add-btn").disabled = distinctCount === 0;
+      document.getElementById("combo-add-btn").dataset.coupon = couponCode || "";
+    }
+
+    document.getElementById("combo-add-btn").addEventListener("click", function () {
+      Object.keys(selected).forEach(function (id) {
+        addToCart(Number(id), selected[id]);
+      });
+
+      var coupon = this.dataset.coupon;
+      if (coupon) applyCoupon(coupon);
+
+      window.location.href = "cart.html";
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      renderComboProducts();
+      renderComboSummary();
+    });
+  </script>
+</body>
+</html>

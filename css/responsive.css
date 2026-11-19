@@ -1,0 +1,177 @@
+/* =====================================================
+   OCEAN SEAFOOD - FILE: css/responsive.css
+   Nội dung: giao diện cho máy tính bảng và điện thoại
+   Cách hoạt động: @media (max-width: ...) nghĩa là
+   "chỉ áp dụng khi màn hình hẹp hơn ... pixel"
+   ===================================================== */
+
+/* ---------- 1. MÁY TÍNH BẢNG NGANG (dưới 1024px) ---------- */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 2.6rem; }
+  .nav { gap: 20px; }
+}
+
+/* ---------- 2. MÁY TÍNH BẢNG ĐỨNG (dưới 900px) ---------- */
+@media (max-width: 900px) {
+
+  /* --- Menu ☰ trên header --- */
+  .menu-toggle {
+    display: block;           /* bật nút ba gạch (mặc định đang ẩn) */
+  }
+
+  /* Menu biến thành bảng xổ xuống ngay dưới header.
+     Mặc định ẩn; main.js thêm class "open" khi bấm ☰ */
+  .nav {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition);
+  }
+  .nav.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav a {
+    padding: 15px 24px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .nav a::after { display: none; }   /* bỏ gạch vàng chạy ra ở menu dọc */
+  .nav a.active {
+    background-color: var(--color-primary-light);
+    border-left: 4px solid var(--color-gold);
+  }
+
+  /* Câu chào "Xin chào, tên" quá dài cho header hẹp, ẩn đi
+     (tên vẫn xem được ở trang Tài khoản) */
+  .user-greeting { display: none; }
+
+  /* --- Bố cục chia cột chuyển sang xếp dọc --- */
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+
+  .cart-layout,
+  .detail-layout,
+  .about-block,
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Khung tổng tiền không còn "dính" khi cuộn nữa */
+  .order-summary {
+    position: static;
+  }
+
+  .detail-image img { height: 320px; }
+  .about-block img  { height: 260px; }
+
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .hero { min-height: 75vh; }
+    /* Màn hình hẹp: bỏ vòng xoay 3D, banner về 1 cột */
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-3d { display: none; }
+}
+
+/* ---------- 3. ĐIỆN THOẠI LỚN (dưới 768px) ---------- */
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+
+  .section { padding: 50px 0; }
+  .section-title { font-size: 1.8rem; }
+
+  .hero h1 { font-size: 2.1rem; }
+  .hero p  { font-size: 1.05rem; }
+
+  .page-banner { padding: 44px 0; }
+  .page-banner h1 { font-size: 1.9rem; }
+
+  .form-box { padding: 24px 20px; }
+}
+
+/* ---------- 4. ĐIỆN THOẠI (dưới 600px) ---------- */
+@media (max-width: 600px) {
+  .grid-3,
+  .grid-4 { grid-template-columns: 1fr; }   /* mỗi hàng một thẻ */
+
+  .form-row { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+
+  /* Nút trong banner trải hết chiều ngang cho dễ bấm */
+  .hero-buttons .btn { flex: 1; min-width: 150px; }
+
+  /* Thanh lọc: ô chọn rộng hết hàng */
+  .filter-bar select { width: 100%; }
+
+  /* Hàng nút danh mục: cuộn ngang thay vì xuống nhiều dòng */
+  .category-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn { white-space: nowrap; }
+
+  /* --- Món trong giỏ hàng: sắp xếp lại cho vừa màn hình hẹp ---
+     Hàng 1: [ảnh] [tên + giá] [xóa]
+     Hàng 2:       [số lượng]  [thành tiền]   */
+  .cart-item {
+    grid-template-columns: 76px 1fr auto;
+    gap: 10px 12px;
+  }
+  .cart-item img {
+    width: 76px;
+    height: 70px;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .cart-item > div:nth-child(2) { grid-column: 2; grid-row: 1; }
+  .cart-item .remove-btn        { grid-column: 3; grid-row: 1; }
+  .cart-item .qty-control       { grid-column: 2; grid-row: 2; justify-self: start; }
+  .cart-item .item-total        { grid-column: 3; grid-row: 2; min-width: 0; }
+
+  .detail-image img { height: 240px; }
+  .detail-info h1   { font-size: 1.6rem; }
+  .detail-buy       { flex-wrap: wrap; }
+
+  /* Thông báo nổi: rộng gần hết màn hình */
+  .toast-container { left: 12px; right: 12px; }
+  .toast { min-width: 0; max-width: none; }
+
+  /* Hai nút nổi gọn hơn */
+  .back-to-top  { right: 14px; bottom: 76px; }
+  .quick-contact { right: 14px; bottom: 18px; padding: 0 14px; }
+  .category-image { height: 150px; }
+}
+
+/* ---------- 5. ĐIỆN THOẠI NHỎ (dưới 400px) ---------- */
+@media (max-width: 400px) {
+  .container { padding: 0 14px; }
+  .logo { font-size: 1.15rem; letter-spacing: 0; }
+  .header-actions { gap: 10px; }
+  .header-actions .btn-sm { padding: 7px 11px; font-size: 0.82rem; }
+  .hero h1 { font-size: 1.8rem; }
+  .product-actions { flex-direction: column; }   /* hai nút trong card xếp dọc */
+}
+
+/* ---------- 6. TÔN TRỌNG NGƯỜI DÙNG TẮT HIỆU ỨNG ---------- */
+/* Người dùng bật "giảm chuyển động" trong hệ điều hành thì tắt hiệu ứng */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .product-card,
+  .btn,
+  .category-card { transition: none; }
+}

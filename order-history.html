@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch sử đơn hàng - OCEAN SEAFOOD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/products.js"></script>
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <section class="page-banner">
+    <div class="container">
+      <h1>Lịch sử đơn hàng</h1>
+      <p>Các đơn bạn đã đặt trên trình duyệt này</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:800px">
+      <div id="order-history-list"></div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    const ORDERS_KEY = "oceanSeafoodOrders";
+
+    function getOrders() {
+      try {
+        const data = localStorage.getItem(ORDERS_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch (e) { return []; }
+    }
+
+    function renderOrderHistory() {
+      const box = document.getElementById("order-history-list");
+      const orders = getOrders().slice().reverse();   // mới nhất lên đầu
+
+      if (orders.length === 0) {
+        box.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🧾</div>
+            <p>Bạn chưa có đơn hàng nào.</p>
+            <a href="menu.html" class="btn btn-primary" style="margin-top:16px">Xem thực đơn</a>
+          </div>`;
+        return;
+      }
+
+      box.innerHTML = orders.map(function (order) {
+        const itemsHtml = order.items.map(function (item) {
+          return '<li>' + item.name + ' × ' + item.quantity + ' — ' + formatPrice(item.lineTotal) + '</li>';
+        }).join("");
+
+        return `
+          <div class="form-box" style="margin-bottom:18px">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px">
+              <strong style="color:var(--color-primary)">${order.code}</strong>
+              <span style="color:var(--color-text-light); font-size:0.9rem">${order.createdAt}</span>
+            </div>
+            <p style="margin:8px 0; font-size:0.9rem; color:var(--color-text-light)">${order.status}</p>
+            <ul style="margin-bottom:12px">${itemsHtml}</ul>
+            <div class="summary-row total">
+              <span>Tổng thanh toán</span>
+              <span>${formatPrice(order.totals.total)}</span>
+            </div>
+            <button type="button" class="btn btn-gold btn-sm" style="margin-top:10px" onclick="reorder('${order.code}')">
+              🔁 Đặt lại đơn này
+            </button>
+          </div>`;
+      }).join("");
+    }
+
+    // Thêm lại toàn bộ món của đơn cũ vào giỏ hàng hiện tại
+    function reorder(code) {
+      const order = getOrders().find(function (o) { return o.code === code; });
+      if (!order) return;
+
+      let addedCount = 0;
+      order.items.forEach(function (item) {
+        const product = getProductById(item.id);
+        if (product && product.inStock) {
+          addToCart(product.id, item.quantity);
+          addedCount++;
+        }
+      });
+
+      if (addedCount === 0) {
+        showToast("Các món trong đơn này hiện đã hết hàng.", "error");
+        return;
+      }
+      if (addedCount < order.items.length) {
+        showToast("Đã thêm các món còn hàng vào giỏ. Một số món đã hết.", "info");
+      }
+      setTimeout(function () { window.location.href = "cart.html"; }, 700);
+    }
+
+    document.addEventListener("DOMContentLoaded", renderOrderHistory);
+  </script>
+</body>
+</html>
